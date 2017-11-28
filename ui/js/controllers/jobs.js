@@ -216,8 +216,6 @@ treeherderApp.controller('ResultSetCtrl', [
                 $scope.resultset.id
             ).then(function (decisionTaskID) {
                 ThResultSetModel.triggerMissingJobs(
-                    $scope.resultset.id,
-                    $scope.repoName,
                     decisionTaskID
                 ).then(function (msg) {
                     thNotify.send(msg, "success");
@@ -245,8 +243,6 @@ treeherderApp.controller('ResultSetCtrl', [
                 $scope.resultset.id
             ).then(function (decisionTaskID) {
                 ThResultSetModel.triggerAllTalosJobs(
-                    $scope.resultset.id,
-                    $scope.repoName,
                     times,
                     decisionTaskID
                 ).then(function (msg) {
@@ -270,7 +266,7 @@ treeherderApp.controller('ResultSetCtrl', [
             if ($scope.user.loggedin) {
                 var buildernames = ThResultSetStore.getSelectedRunnableJobs($rootScope.repoName, $scope.resultset.id);
                 ThResultSetStore.getGeckoDecisionTaskId($rootScope.repoName, $scope.resultset.id).then(function (decisionTaskID) {
-                    ThResultSetModel.triggerNewJobs($scope.repoName, $scope.resultset.id, buildernames, decisionTaskID).then(function (results) {
+                    ThResultSetModel.triggerNewJobs(buildernames, decisionTaskID).then(function (results) {
                         thNotify.send(results[1], "success");
                         ThResultSetStore.deleteRunnableJobs($scope.repoName, $scope.resultset);
                     }, function (e) {
