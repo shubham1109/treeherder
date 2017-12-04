@@ -14,7 +14,7 @@ export default class Navigation extends React.Component {
 
   render() {
     return (
-      <Navbar toggleable fixed="top" className="th-top-navbar">
+      <Navbar expand fixed="top" className="th-top-navbar">
         <a id="th-logo" href="/">
           <img src={logoUrl} alt="Treeherder" />
         </a>

@@ -37,7 +37,7 @@ class StatusNavbar extends React.Component {
 
   render() {
     return (
-      <Navbar toggleable>
+      <Navbar expand>
         <Nav className="mr-auto">
           <span className="navbar-text">
             <Icon name="code"/> Revision <code className="push-revision">{this.props.push.revision}</code>
