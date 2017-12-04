@@ -5,15 +5,9 @@ import {
   applyMiddleware,
 } from 'redux';
 import * as groupsStore from './modules/groups';
-import { platformMap } from './store'
+import { platformMap } from '../../js/values';
 import createHistory from 'history/createBrowserHistory';
-import createDebounce from 'redux-debounce'
-
-// // TODO: When this app is part of Treeherder, we can get this from the router / URL
-export const treeherder_host = process.env.TREEHERDER_HOST ? process.env.TREEHERDER_HOST : 'treeherder.mozilla.org';
-export const fetch_protocol = process.env.FETCH_PROTOCOL ? process.env.FETCH_PROTOCOL : 'https';
-export const treeherder = `${fetch_protocol}://${treeherder_host}`;
-const request = (url, options) => fetch(url.replace('http:', `${fetch_protocol}:`), options);
+import createDebounce from 'redux-debounce';
 
 function getGroupText(group) {
   const symbol = group.symbol.startsWith('tc-') ?
@@ -29,7 +23,7 @@ function getId(hash) {
 async function fetchTests(store, fetchOptions) {
   let fetchStatus = 'No failed tests to show';
   const { url, filter, options, hideClassified, bugSuggestions } = fetchOptions;
-  const response = await request(url, fetchOptions);
+  const response = await fetch(url, fetchOptions);
   const pushResp = await response.json();
   // Here the json is the job_detail result.
   // We need to take each entry and query for the errorsummary.log
@@ -41,7 +35,7 @@ async function fetchTests(store, fetchOptions) {
     id: getId(pushData.id),
     repository: pushData.repository,
   };
-  let payload = {groups: {}, rowData: {}, fetchStatus, push, treeherder, filter };
+  let payload = { groups: {}, rowData: {}, fetchStatus, push, filter };
   const jobs = pushData.jobs.edges;
   // It's possible there are no failed jobs, so return early.
 
@@ -142,7 +136,7 @@ function buildFailureLines(lsAcc, failureLine) {
 
 async function fetchOptions(store, fetchOptions) {
   const { url } = fetchOptions;
-  const resp = await request(url, fetchOptions);
+  const resp = await fetch(url, fetchOptions);
   const options = await resp.json();
   store.dispatch({
     type: groupsStore.types.STORE_OPTIONS,
@@ -157,7 +151,7 @@ async function fetchOptions(store, fetchOptions) {
 
 async function fetchCounts(store, fetchOptions) {
   const { url } = fetchOptions;
-  const resp = await request(url, fetchOptions);
+  const resp = await fetch(url, fetchOptions);
   const pushStatus = await resp.json();
   const counts = {
     success: 0,
@@ -271,12 +265,12 @@ async function fetchBugs(store, { rowData, url }) {
   }, {});
   // Do a request for each url in the keys of the testMap.  Using them as keys eliminates
   // duplicate requests since multiple tests can be in the same job.
-  const responses = await Promise.all(Object.keys(testMap).map(url => request(url)));
+  const responses = await Promise.all(Object.keys(testMap).map(url => fetch(url)));
   const respData = await Promise.all(responses.map(promise => promise.json()));
   const bugSuggestions = respData.reduce((bsAcc, data, idx) => {
     testMap[responses[idx].url].forEach((test) => {
       test.bugs = { ...test.bugs, ...extractBugSuggestions(data, test.name) };
-      bsAcc = { ...bugSuggestions, [`${test.jobGroup}-${test.name}`]: test.bugs};
+      bsAcc = { ...bsAcc, [`${test.jobGroup}-${test.name}`]: test.bugs };
     });
     return bsAcc;
   }, {});

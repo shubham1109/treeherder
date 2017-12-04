@@ -1,6 +1,6 @@
 'use strict';
 
-treeherder.value("thPlatformMap", {
+export const platformMap = {
     linux32: "Linux",
     "linux32-devedition": "Linux DevEdition",
     "linux32-qr": "Linux QuantumRender",
@@ -143,7 +143,9 @@ treeherder.value("thPlatformMap", {
     lint: "Linting",
     "release-mozilla-release-": "Balrog Publishing",
     other: "Other"
-});
+};
+
+treeherder.value("thPlatformMap", platformMap);
 
 treeherder.value("thOptionOrder", {
     opt: 0,

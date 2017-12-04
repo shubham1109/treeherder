@@ -161,11 +161,11 @@ module.exports = neutrino => {
             xhtml: true,
             mobile: true,
             minify: HTML_MINIFY_OPTIONS,
-            title: "Treeherder TestGroup - Experimental",
+            title: "Treeherder TestView",
             meta: [
                 {
                     "name": "description",
-                    "content": "Treeherder TestGroup - Experimental"
+                    "content": "Treeherder TestView"
                 },
                 {
                     "name": "author",
